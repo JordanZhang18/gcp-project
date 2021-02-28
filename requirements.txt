@@ -1,0 +1,10 @@
+Flask==1.1.2
+numpy
+pandas
+yahoofinancials
+gcloud
+pyarrow
+google.cloud
+google.auth
+google.cloud.bigquery
+google.cloud.bigquery_storage
