@@ -1,35 +1,47 @@
-from flask import Flask, render_template, request
-from flask import jsonify
-import google.auth
-from google.cloud import bigquery
-#from google.cloud import bigquery_storage
-from google.oauth2 import service_account
-#credentials = service_account.Credentials.from_service_account_file(
-#'path/to/file.json')
-#project_id = 'covid19-302022'
+import logging
+import os
 
+import pickle
+from flask import Flask, request
+from google.cloud import storage
 
-credentials, project_id = google.auth.default(
-    scopes=["https://www.googleapis.com/auth/cloud-platform"]
-)
+MODEL_BUCKET = os.environ['MODEL_BUCKET']
+MODEL_FILENAME = os.environ['MODEL_FILENAME']
+MODEL = None
 
-bqclient = bigquery.Client(credentials= credentials,project=project_id)
-#bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
-    
 app = Flask(__name__)
 
 
-@app.route("/")
-def homepage():
-    return render_template("page.html", title="HOME PAGE")
+@app.before_first_request
+def _load_model():
+    # Get the model information 
+    global MODEL
+    client = storage.Client()
+    bucket = client.get_bucket(MODEL_BUCKET)
+    blob = bucket.get_blob(MODEL_FILENAME)
+    s = blob.download_as_string()
+    MODEL = pickle.loads(s)
 
-@app.route("/predict")
-def docs():
-    return render_template("page.html", title="predict page")
+@app.route('/', methods=['GET'])
+def index():
+    return str(MODEL), 200
 
-@app.route("/about")
-def about():
-    return render_template("page.html", title="about page")
-  
-if __name__ == '__main__':
-  app.run(host='127.0.0.1', port=8080, debug=True)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    X = request.get_json()['X']
+    y = MODEL.predict(X).tolist()
+    return json.dumps({'y': y}), 200
+
+
+@app.errorhandler(500)
+def server_error(e):
+    # log error
+    logging.exception('An error occurred during a request.')
+    return """
+    An internal error occurred: <pre>{}</pre>
+    See logs for full stacktrace.
+    """.format(e), 500
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=8080, debug=True)
