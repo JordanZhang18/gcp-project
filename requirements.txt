@@ -1,17 +1,10 @@
 pytest
 pylint
-jupyter
-pytest-cov
 pandas
 nbval
 click
 requests
 flask
-gunicorn
 pickle
 scikit-learn
-numpy
-scipy
-
 google-cloud-storage
-emoji
