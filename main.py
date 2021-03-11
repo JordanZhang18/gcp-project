@@ -26,9 +26,9 @@ def _load_model():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    X = request.get_json()['X']
+    X = request.get_json()
     y = MODEL.predict(X).tolist()
-    return json.dumps({'y': y}), 200
+    return json.dumps({'predicted_Gross': y})
 
 
 @app.errorhandler(500)
