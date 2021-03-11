@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -5,8 +6,8 @@ import pickle
 from flask import Flask, request
 from google.cloud import storage
 
-MODEL_BUCKET = os.environ['MODEL_BUCKET']
-MODEL_FILENAME = os.environ['MODEL_FILENAME']
+MODEL_BUCKET = os.environ['zhang-msds433.appspot.com']
+MODEL_FILENAME = os.environ['zhang-msds433.appspot.com/model']
 MODEL = None
 
 app = Flask(__name__)
@@ -21,10 +22,6 @@ def _load_model():
     blob = bucket.get_blob(MODEL_FILENAME)
     s = blob.download_as_string()
     MODEL = pickle.loads(s)
-
-@app.route('/', methods=['GET'])
-def index():
-    return str(MODEL), 200
 
 
 @app.route('/predict', methods=['POST'])
