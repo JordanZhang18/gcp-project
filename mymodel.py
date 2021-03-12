@@ -10,11 +10,11 @@ import pickle
 def SalePrediction(form_dict):
     df = pd.DataFrame(form_dict, index=[0])
     
-    repo_path = Path(os.getcwd())
+    #repo_path = Path(os.getcwd())
     try:
-        with open( repo_path/"model.p", 'rb') as modelfile:
+        with open( "model.p", 'rb') as modelfile:
             lm = pickle.load(modelfile)
-        with open(repo_path/"encoder.p", 'rb') as encoder:
+        with open("encoder.p", 'rb') as encoder:
             enc = pickle.load(encoder)    
         df[['Type','Theatre']] = enc.transform(df[['Type','Theatre']])
         pred_sale = lm.predict(df)[0]
