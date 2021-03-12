@@ -9,15 +9,17 @@ import pickle
 
 def SalePrediction(form_dict):
     df = pd.DataFrame(form_dict, index=[0])
-    try: 
-        repo_path = Path(os.getcwd())
-        with open(repo_path / "model.p", 'rb') as modelfile:
+    
+    repo_path = Path(os.getcwd())
+    try:
+        with open( repo_path/"model.p", 'rb') as modelfile:
             lm = pickle.load(modelfile)
-        with open(repo_path / "encoder.p", 'rb') as encoder:
+        with open(repo_path/"encoder.p", 'rb') as encoder:
             enc = pickle.load(encoder)    
         df[['Type','Theatre']] = enc.transform(df[['Type','Theatre']])
         pred_sale = lm.predict(df)[0]
         return "The show is expected to generate revenue of ${0}!".format(pred_sale)
+    
     except:
         return 'Sorry, there was a problem processing the data entered... Please go back and double check your entries, thanks!'
 
