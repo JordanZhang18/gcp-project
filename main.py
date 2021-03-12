@@ -12,15 +12,20 @@ app = Flask(__name__)
 def Hub():
     return render_template('hub.html')
 
+
 @app.route('/Predictor')
-def ResalePredictor():
+def SalePredictor():
     return render_template('Predictor.html')
 
-@app.route('/SalePredictor', methods=['POST'])
+
+
+@app.route('/Predictor', methods=['POST'])
 def SalePredictorPost():
+    
     form_dict = {'Attendance':request.form['Attendance'],'AVGCapcity':request.form['AVGCapcity'],'Month':request.form['Month'],'Year':request.form['Year'],
     'Performances':request.form['Performances'],'Type':request.form['Type'],'Theatre':request.form['Theatre']}
     final_output = SalePrediction(form_dict)
+    
     return render_template('PredictorPost.html', final_output=final_output)
 
 
