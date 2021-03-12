@@ -3,9 +3,9 @@ install:
 		pip install -r requirements.txt
 
 test:
-	python -m pytest -vv --cov=test.py
+	#notestsfornow
 
 lint:
-	pylint --disable=R,C source_code_test.py
+	pylint --disable=R,C main.py
 
 all: install lint test
