@@ -1,10 +1,8 @@
 Flask==1.1.2
-numpy
+statsmodels==0.12.1
+requests==2.25.0
+pylint
+pathlib
 pandas
-yahoofinancials
-gcloud
-pyarrow
-google.cloud
-google.auth
-google.cloud.bigquery
-google.cloud.bigquery_storage
+numpy
+google-cloud-storage==1.36.1

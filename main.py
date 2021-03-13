@@ -1,35 +1,37 @@
-from flask import Flask, render_template, request
-from flask import jsonify
-import google.auth
-from google.cloud import bigquery
-#from google.cloud import bigquery_storage
-from google.oauth2 import service_account
-#credentials = service_account.Credentials.from_service_account_file(
-#'path/to/file.json')
-#project_id = 'covid19-302022'
+from flask import Flask, request, render_template, redirect, url_for
+from mymodel import SalePrediction
+import pandas as pd
+import os
+from pathlib import Path
 
 
-credentials, project_id = google.auth.default(
-    scopes=["https://www.googleapis.com/auth/cloud-platform"]
-)
-
-bqclient = bigquery.Client(credentials= credentials,project=project_id)
-#bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
-    
 app = Flask(__name__)
 
 
-@app.route("/")
-def homepage():
-    return render_template("page.html", title="HOME PAGE")
+@app.route('/')
+def Hub():
+    return render_template('hub.html')
 
-@app.route("/predict")
-def docs():
-    return render_template("page.html", title="predict page")
 
-@app.route("/about")
-def about():
-    return render_template("page.html", title="about page")
-  
+@app.route('/Predictor')
+def SalePredictor():
+    return render_template('Predictor.html')
+
+
+
+@app.route('/Predictor', methods=['POST'])
+def SalePredictorPost():
+    
+    form_dict = {'Attendance':request.form['Attendance'],'AVGCapcity':request.form['AVGCapcity'],'Month':request.form['Month'],'Year':request.form['Year'],
+    'Performances':request.form['Performances'],'Type':request.form['Type'],'Theatre':request.form['Theatre']}
+    
+    final_output = SalePrediction(form_dict)
+    
+    return render_template('PredictorPost.html', final_output=final_output)
+
+
+
 if __name__ == '__main__':
-  app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=False)
+
+
