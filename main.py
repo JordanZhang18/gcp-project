@@ -24,6 +24,7 @@ def SalePredictorPost():
     
     form_dict = {'Attendance':request.form['Attendance'],'AVGCapcity':request.form['AVGCapcity'],'Month':request.form['Month'],'Year':request.form['Year'],
     'Performances':request.form['Performances'],'Type':request.form['Type'],'Theatre':request.form['Theatre']}
+    
     final_output = SalePrediction(form_dict)
     
     return render_template('PredictorPost.html', final_output=final_output)
